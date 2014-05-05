@@ -2,7 +2,7 @@
   "hostname"  : "", 
   "account"   : "",
   "password"  : "",
-  "interval"  : 300,
+  "interval"  : 10,
   "log"       : "/tmp/no-ip-daemon.log",
   "ipresolve" : "http://wtfismyip.com/text",
   "updateurl" : "https://dynupdate.no-ip.com/nic/update?hostname={hostname}&myip={ip}",

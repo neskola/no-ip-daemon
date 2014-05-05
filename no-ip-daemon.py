@@ -2,17 +2,21 @@
 # -*- coding: utf-8 -*-
 
 import os, time, json
+_SETTINGS = dict()
 
 def createDaemon():
+  global _SETTINGS
   """ 
       This function create a service/Daemon that will execute a det. task
   """
   jsonfile = open('settings.json')
-  settings = json.load(jsonfile)
+  _SETTINGS = json.load(jsonfile)
   jsonfile.close()
+  print json.dumps(_SETTINGS)
+  print _SETTINGS['interval']
 
   try:
-    pidfile = open(settings['pidfile'])
+    pidfile = open(_SETTINGS['pidfile'])
     print 'Error: pid file already exists'
     pidfile.close()
     os._exit(1)
@@ -26,7 +30,7 @@ def createDaemon():
 
     if pid > 0:
       print 'PID: %d' % pid
-      with open(settings['pidfile'], 'w') as pidfile:
+      with open(_SETTINGS['pidfile'], 'w') as pidfile:
         pidfile.write(str(pid))
         pidfile.close()
       os._exit(0)
@@ -42,13 +46,14 @@ def doTask():
       This function create a task that will be a daemon
   """
   # Open the file in write mode
-  file = open('/tmp/tarefa.log', 'w')
+  file = open(_SETTINGS['log'], 'w')
 
   # Start the write
   while True:
     print >> file, time.ctime()
-    file.flush()
-    time.sleep(2)
+    print >> file, 'sleeping for %d seconds.' % _SETTINGS['interval']
+    file.flush()    
+    time.sleep(_SETTINGS['interval'])
 
   # Close the file
   file.close()
