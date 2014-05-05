@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, time, json
+import os, time, json, urllib2
 _SETTINGS = dict()
 
 def createDaemon():
@@ -50,8 +50,9 @@ def doTask():
 
   # Start the write
   while True:
-    print >> file, time.ctime()
-    print >> file, 'sleeping for %d seconds.' % _SETTINGS['interval']
+    _new_ = urllib2.urlopen("http://curlmyip.com/").read().strip()
+    print >> file, time.ctime() + ' ip: ' + _new_
+    print >> file, 'next update check in %d seconds.' % _SETTINGS['interval']
     file.flush()    
     time.sleep(_SETTINGS['interval'])
 
