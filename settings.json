@@ -1,10 +1,10 @@
 { 
   "hostname"  : "", 
-  "account"   : "",
+  "username"  : "",
   "password"  : "",
-  "interval"  : 10,
+  "interval"  : 60,
   "log"       : "/tmp/no-ip-daemon.log",
   "ipresolve" : "http://wtfismyip.com/text",
-  "updateurl" : "https://dynupdate.no-ip.com/nic/update?hostname={hostname}&myip={ip}",
+  "updateurl" : "http://dynupdate.no-ip.com/nic/update?hostname={hostname}&myip={ip}",
   "pidfile"   : "/tmp/no-ip-daemon.pid"
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, time, json, urllib2
+import os, time, json, urllib2, base64
 _SETTINGS = dict()
 
 def createDaemon():
@@ -12,9 +12,8 @@ def createDaemon():
   jsonfile = open('settings.json')
   _SETTINGS = json.load(jsonfile)
   jsonfile.close()
-  print json.dumps(_SETTINGS)
-  print _SETTINGS['interval']
-
+  #print json.dumps(_SETTINGS)
+ 
   try:
     pidfile = open(_SETTINGS['pidfile'])
     print 'Error: pid file already exists'
@@ -50,9 +49,29 @@ def doTask():
 
   # Start the write
   while True:
-    _new_ = urllib2.urlopen("http://curlmyip.com/").read().strip()
+    _new_ = urllib2.urlopen(_SETTINGS['ipresolve']).read().strip()
+    _url_ = _SETTINGS['updateurl']
+    
     print >> file, time.ctime() + ' ip: ' + _new_
     print >> file, 'next update check in %d seconds.' % _SETTINGS['interval']
+
+    # Update current public ip
+    _url_called_ = _url_.format(hostname=_SETTINGS['hostname'], ip=_new_)
+    _user_data_ = "Basic " + (_SETTINGS['username'] + ":" + _SETTINGS['password']).encode("base64").rstrip()
+    
+    print >> file, _url_called_ + " " + _user_data_
+
+    req = urllib2.Request(_url_)
+    req.add_header("Authorization", _user_data_)
+    
+    try:
+      res = urllib2.urlopen(req)
+      print >> file, 'response is ' + res.read()
+      print >> file, '... Succeed'
+    except urllib2.HTTPError:
+      print >> file, " authentication error" 
+            
+    
     file.flush()    
     time.sleep(_SETTINGS['interval'])
 
@@ -63,3 +82,6 @@ if __name__ == '__main__':
 
   # Create the Daemon
   createDaemon()
+
+
+
