@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, time, json, urllib2, base64
+import os, time, json, urllib2, base64, re
 _SETTINGS = dict()
+_OLD_IP = '1.1.1.1'
 
 def createDaemon():
   global _SETTINGS
@@ -50,28 +51,44 @@ def doTask():
   # Start the write
   while True:
     _new_ = urllib2.urlopen(_SETTINGS['ipresolve']).read().strip()
-    _url_ = _SETTINGS['updateurl']
-    
-    print >> file, time.ctime() + ' ip: ' + _new_
+    print >> file, time.ctime() + ' new ip: ' + _new_ + ' old ip: ' + _OLD_IP
     print >> file, 'next update check in %d seconds.' % _SETTINGS['interval']
 
-    # Update current public ip
-    _url_called_ = _url_.format(hostname=_SETTINGS['hostname'], ip=_new_)
-    _user_data_ = "Basic " + (_SETTINGS['username'] + ":" + _SETTINGS['password']).encode("base64").rstrip()
-    
-    print >> file, _url_called_ + " " + _user_data_
+    if _new_ == _OLD_IP:
+      print >> file, 'ip has not changed. no need to update.'
+    else:
+      print >> file, 'ip has changed. trying to update.'
+      _url_ = _SETTINGS['updateurl']    
+      
+      """ Update current public ip """
+      _url_called_ = _url_.format(hostname=_SETTINGS['hostname'], ip=_new_)
+      _user_data_ = "Basic " + (_SETTINGS['username'] + ":" + _SETTINGS['password']).encode("base64").rstrip()
+      
+      print >> file, _url_called_ + " " + _user_data_
+      
+      req = urllib2.Request(_url_)
+      req.add_header("Authorization", _user_data_)
+      req.add_header('User-agent', 'Python no-ip-daemon v1.0 neskola@gmail.com')
+      
+      try:
+        res = urllib2.urlopen(req)
+        res_txt = res.read()
+        res_code = res.getcode()
 
-    req = urllib2.Request(_url_)
-    req.add_header("Authorization", _user_data_)
-    
-    try:
-      res = urllib2.urlopen(req)
-      print >> file, 'response is ' + res.read()
-      print >> file, '... Succeed'
-    except urllib2.HTTPError:
-      print >> file, " authentication error" 
+        print >> file, 'response is ' + res_txt + ' ' + str(res_code) 
+        if re.match('^(good)|(nochg).*', res_txt):
+          print >> file, '... Succeed'
+        else:
+          print >> file, '... Failed. Exiting.'
+          file.flush()
+          file.close()
+          os._exit(1)
+      except urllib2.HTTPError as e:
+        print >> file, "HTTP exception {0},{1}".format(e.code, e.reason) 
+        file.flush()
+        file.close()
+        os._exit(1)
             
-    
     file.flush()    
     time.sleep(_SETTINGS['interval'])
 
