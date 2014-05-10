@@ -80,7 +80,7 @@ def doTask():
         print >> file, 'response is ' + res_txt + ' ' + str(res_code) 
         if re.match('^(good)|(nochg).*', res_txt):
           print >> file, '... Succeed'
-          _OLD_IP_ = _new_
+          _OLD_IP = _new_
         else:
           print >> file, '... Failed. Exiting.'
           file.flush()
