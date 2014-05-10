@@ -58,17 +58,19 @@ def doTask():
       print >> file, 'ip has not changed. no need to update.'
     else:
       print >> file, 'ip has changed. trying to update.'
-      _url_ = _SETTINGS['updateurl']    
+      _updateurl_ = _SETTINGS['updateurl']    
       
       """ Update current public ip """
-      _url_called_ = _url_.format(hostname=_SETTINGS['hostname'], ip=_new_)
+      _url_ = _updateurl_.format(hostname=_SETTINGS['hostname'], ip=_new_)
       _user_data_ = "Basic " + (_SETTINGS['username'] + ":" + _SETTINGS['password']).encode("base64").rstrip()
       
-      print >> file, _url_called_ + " " + _user_data_
+      print >> file, _url_ + " " + _user_data_
       
       req = urllib2.Request(_url_)
       req.add_header("Authorization", _user_data_)
       req.add_header('User-agent', 'Python no-ip-daemon v1.0 neskola@gmail.com')
+      
+      print >> file, req
       
       try:
         res = urllib2.urlopen(req)
@@ -78,6 +80,7 @@ def doTask():
         print >> file, 'response is ' + res_txt + ' ' + str(res_code) 
         if re.match('^(good)|(nochg).*', res_txt):
           print >> file, '... Succeed'
+          _OLD_IP_ = _new_
         else:
           print >> file, '... Failed. Exiting.'
           file.flush()
