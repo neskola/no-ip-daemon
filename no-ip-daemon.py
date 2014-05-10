@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import os, time, json, urllib2, base64, re
+
+
 _SETTINGS = dict()
 _OLD_IP = '1.1.1.1'
 
 def createDaemon():
-  global _SETTINGS
+  global _SETTINGS, _OLD_IP
   """ 
       This function create a service/Daemon that will execute a det. task
   """
@@ -42,6 +44,7 @@ def createDaemon():
   doTask()
 
 def doTask():
+  global _OLD_IP
   """ 
       This function create a task that will be a daemon
   """
