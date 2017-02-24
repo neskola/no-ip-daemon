@@ -1,0 +1,10 @@
+[Unit]
+Description=No-Ip update Daemon
+After=network-online.target
+
+[Service]
+Type=idle
+ExecStart=/opt/no-ip-daemon/launcher.sh
+
+[Install]
+WantedBy=multi-user.target
