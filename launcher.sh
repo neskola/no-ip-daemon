@@ -10,4 +10,5 @@ if [[ $pid = *[[:digit:]]* ]]; then
     rm /tmp/no-ip-daemon.pid
 fi
 
+cd /opt/no-ip-daemon
 python no-ip-daemon.py

@@ -1,0 +1,10 @@
+[Unit]
+Description=No-Ip update Daemon
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/bash /opt/no-ip-daemon/launcher.sh
+
+[Install]
+WantedBy=multi-user.target
