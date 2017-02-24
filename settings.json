@@ -1,10 +1,21 @@
-{ 
-  "hostname"  : "", 
-  "username"  : "",
-  "password"  : "",
-  "interval"  : 600,
-  "log"       : "/tmp/no-ip-daemon.log",
-  "ipresolve" : "http://wtfismyip.com/text",
-  "updateurl" : "http://dynupdate.no-ip.com/nic/update?hostname={hostname}&myip={ip}",
-  "pidfile"   : "/tmp/no-ip-daemon.pid"
+{
+  "globals": {
+    "interval": 600,
+    "log": "/tmp/no-ip-daemon.log",
+    "ipresolve": "http://wtfismyip.com/text",
+    "updateurl": "http://dynupdate.no-ip.com/nic/update?hostname={hostname}&myip={ip}",
+    "pidfile": "/tmp/no-ip-daemon.pid"
+  },
+  "hosts": [
+    {
+      "hostname": "",
+      "username": "",
+      "password": ""
+    },
+    {
+      "hostname": "",
+      "username": "",
+      "password": ""
+    }
+  ]
 }
