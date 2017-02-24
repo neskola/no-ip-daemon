@@ -7,8 +7,8 @@ pid=$(pgrep -f "no-ip-daemon.py")
 if [[ $pid = *[[:digit:]]* ]]; then
     echo "Found process with pid ("$pid"). Killing it."
     kill -9 $pid
-    rm /tmp/no-ip-daemon.pid
 fi
+rm /tmp/no-ip-daemon.pid
 
 cd /opt/no-ip-daemon
 python no-ip-daemon.py
