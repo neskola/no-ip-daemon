@@ -16,6 +16,7 @@ fi
 cp launcher.sh settings.json no-ip-daemon.py $installdir
 
 systemctl daemon-reload
+systemctl enable NetworkManager-wait-online.service
 systemctl enable noip.service
 systemctl start noip.service
 systemctl status noip.service
