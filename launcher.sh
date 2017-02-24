@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -
 
 echo "Kill existing pid and remove daemon pid -files in /tmp/"
 
@@ -12,3 +12,6 @@ fi
 
 cd /opt/no-ip-daemon
 python no-ip-daemon.py
+
+while pgrep -u root -f "no-ip-daemon.py" > /dev/null; do sleep 1; done
+
